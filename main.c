@@ -1,19 +1,29 @@
 #include <stdio.h>
 #include <math.h>
 
-long double F(long double x)
+long double F1(long double x)
 {
     return logl(x) - x + 1.8;
 }
 
-long double f(long double x)
+long double F2(long double x)
 {
-    return F(x) + x;
+    return x * tanl(x) - ((long double) 1.0) / 3.0;
 }
 
-long double fa(long double x)
+long double f1a(long double x)
 {
     return 1/x;
+}
+
+long double f2a(long double x)
+{
+    return tanl(x) + x / (cosl(x) * cosl(x));
+}
+
+long double f(long double (*F) (long double x),long double x)
+{
+    return F(x) + x;
 }
 
 long double absD(long double x)
@@ -37,39 +47,39 @@ void line()
     printf("\n");
 }
 
-int main() {
-
-    if (absD(fa(2)) >= 1 && absD(fa(3)) >= 1)
+void iter(long double (*fa) (long double x), long double (*F) (long double x), float preferrableX, float start, float finish)
+{
+    if (absD(fa(start)) >= 1 || absD(fa(finish)) >= 1)
     {
-        printf("Function error");
-        return 1;
+        printf("Function error\n");
+        return;
     }
 
-    long double current = (2 + 3) / 2, next  = f(current), eps = fEps(next);
+    long double current = (2 + 3) / 2, next  = f(F, current), eps = fEps(next);
     int iter = 0;
-
-    printf("\nThe equation: ln(x)-x+1.8=0; a = 2; b = 3\n\n");
-    line();
-
-    printf("|X^(k-1)                                     |X^k                                         |");
-    printf("X^k - X^(k-1)       |Iter |\n");
-    line();
 
 
     while (absD(next - current) >= eps)
     {
         current = next;
-        next = f(current);
+        next = f(F, current);
         iter++;
         eps = fEps(next);
-
-        printf("|%2.41LF |%2.41LF |%1.17LF |%4d |\n", current, next, next - current, iter);
     }
+
+    printf("My result = %2.52LF | X = %1.4f | Iterations = %3d\n", next, preferrableX, iter);
+}
+
+int main() {
+
+    printf("\nThe equation: ln(x)-x+1.8=0; a = 2; b = 3\n");
+    printf("Iteration method:  ");
+    iter(&f1a, &F1, 2.8459, 2, 3);
 
     line();
 
-    printf("My result: %2.52LF | X: 2.8459 | Iterations: %3d\n", next, iter);
-
-
+    printf("\nThe equation: x*tg(x)-1/3=0; a = 0.2; b = 1\n");
+    printf("Iteration method:  ");
+    iter(&f2a, &F2, 0.5472, 0.2, 1);
     return 0;
 }
