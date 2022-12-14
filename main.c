@@ -31,6 +31,11 @@ long double absD(long double x)
     return x > 0 ? x : x * -1;
 }
 
+long double maxD(long double a, long double b)
+{
+    return a > b ? a : b;
+}
+
 long double fEps(long double x)
 {
     long double eps = 1.0;
@@ -44,10 +49,9 @@ void line()
     {
         printf("-");
     }
-    printf("\n");
 }
 
-void iter(long double (*fa) (long double x), long double (*F) (long double x), float preferrableX, float start, float finish)
+void iter(long double (*fa) (long double x), long double (*F) (long double x), float start, float finish)
 {
     if (absD(fa(start)) >= 1 || absD(fa(finish)) >= 1)
     {
@@ -67,19 +71,45 @@ void iter(long double (*fa) (long double x), long double (*F) (long double x), f
         eps = fEps(next);
     }
 
-    printf("My result = %2.52LF | X = %1.4f | Iterations = %3d\n", next, preferrableX, iter);
+    printf("My result = %2.52LF | Iterations = %3d\n", next, iter);
+}
+
+void dichotomies(long double (*F) (long double x), long double a, long double b)
+{
+    long double eps = fEps(maxD(a, b));
+    int iter = 0;
+
+    while (absD(a - b) > eps)
+    {
+        if (F(a) * F((a + b) / 2) > 0)
+            a = (a + b) / 2;
+        else
+            b = (a + b) / 2;
+
+        iter++;
+        eps = fEps(maxD(a, b));
+    }
+
+    printf("My result = %2.52LF | Iterations = %3d\n", (a + b) / 2, iter);
+
 }
 
 int main() {
 
-    printf("\nThe equation: ln(x)-x+1.8=0; a = 2; b = 3\n");
-    printf("Iteration method:  ");
-    iter(&f1a, &F1, 2.8459, 2, 3);
+    printf("\nThe equation: ln(x)-x+1.8=0; a = 2; b = 3; x ~= 2.8459\n");
+    printf("Iteration method:    ");
+    iter(&f1a, &F1, 2, 3);
+    printf("Dichotomies method:  ");
+    dichotomies(&F1, 2, 3);
 
     line();
 
-    printf("\nThe equation: x*tg(x)-1/3=0; a = 0.2; b = 1\n");
-    printf("Iteration method:  ");
-    iter(&f2a, &F2, 0.5472, 0.2, 1);
+    printf("\nThe equation: x*tg(x)-1/3=0; a = 0.2; b = 1; x ~= 0.5472\n");
+    printf("Iteration method:    ");
+    iter(&f2a, &F2, 0.2, 1);
+    printf("Dichotomies method:  ");
+    dichotomies(&F2, 0.2, 1);
+
+
     return 0;
 }
