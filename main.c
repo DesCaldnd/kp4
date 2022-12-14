@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
+long double powD(long double, int);
+
 long double F1(long double x)
 {
     return logl(x) - x + 1.8;
@@ -18,7 +20,27 @@ long double f1a(long double x)
 
 long double f2a(long double x)
 {
-    return tanl(x) + x / (cosl(x) * cosl(x));
+    return tanl(x) + x / powD(cosl(x), 2) + 1;
+}
+
+long double F1A(long double x)
+{
+    return 1/x - 1;
+}
+
+long double F2A(long double x)
+{
+    return tanl(x) + x / powD(cosl(x), 2);
+}
+
+long double F1AA(long double x)
+{
+    return -1/(powD(x, 2));
+}
+
+long double F2AA(long double x)
+{
+    return (2 * cosl(x) + 2 * x * sinl(x)) / powD(cosl(x), 3);
 }
 
 long double f(long double (*F) (long double x),long double x)
@@ -34,6 +56,23 @@ long double absD(long double x)
 long double maxD(long double a, long double b)
 {
     return a > b ? a : b;
+}
+
+long double powD(long double x, int pow)
+{
+    if (pow > 0)
+    {
+        for (int i = 1; i < pow; ++i)
+        {
+            x *= x;
+        }
+    } else
+    {
+        for (int i = 0; i <= -1 * pow; ++i)
+        {
+            x /= x;
+        }
+    }
 }
 
 long double fEps(long double x)
@@ -53,13 +92,16 @@ void line()
 
 void iter(long double (*fa) (long double x), long double (*F) (long double x), float start, float finish)
 {
-    if (absD(fa(start)) >= 1 || absD(fa(finish)) >= 1)
+    for(double i = start; i < finish + 0.0001; i += 0.001)
     {
-        printf("Function error\n");
-        return;
+        if (absD(fa(i)) >= 1 || absD(fa(i)) >= 1)
+        {
+            printf("Convergence condition of the function is not met\n");
+            return;
+        }
     }
 
-    long double current = (2 + 3) / 2, next  = f(F, current), eps = fEps(next);
+    long double current = (start + finish) / 2, next  = f(F, current), eps = fEps(next);
     int iter = 0;
 
 
@@ -94,6 +136,30 @@ void dichotomies(long double (*F) (long double x), long double a, long double b)
 
 }
 
+void newton(long double (*F) (long double x), long double (*FA) (long double x), long double (*FAA) (long double x), float a, float b)
+{
+    for (double i = a; i < b + 0.0001; i += 0.001)
+    {
+        if (absD(F(i) * FAA(i)) >= powD(FA(i), 2))
+        {
+            printf("Convergence condition of the function is not met\n");
+            return;
+        }
+    }
+    long double current = (a + b) / 2, next = current - F(current) / FA(current), eps = fEps(next);
+    int iter = 0;
+
+    while (absD(current - next) > eps)
+    {
+        current = next;
+        iter++;
+        next = current - F(current) / FA(current);
+        eps = fEps(next);
+    }
+
+    printf("My result = %2.52LF | Iterations = %3d\n", next, iter);
+}
+
 int main() {
 
     printf("\nThe equation: ln(x)-x+1.8=0; a = 2; b = 3; x ~= 2.8459\n");
@@ -101,6 +167,8 @@ int main() {
     iter(&f1a, &F1, 2, 3);
     printf("Dichotomies method:  ");
     dichotomies(&F1, 2, 3);
+    printf("Newton method:       ");
+    newton(&F1, &F1A, &F1AA, 2, 3);
 
     line();
 
@@ -109,6 +177,8 @@ int main() {
     iter(&f2a, &F2, 0.2, 1);
     printf("Dichotomies method:  ");
     dichotomies(&F2, 0.2, 1);
+    printf("Newton method:       ");
+    newton(&F2, &F2A, &F2AA, 0.2, 1);
 
 
     return 0;
