@@ -1,3 +1,0 @@
-C:/Users/ivanl/CLionProjects/kp4/cmake-build-debug/CMakeFiles/kp4.dir
-C:/Users/ivanl/CLionProjects/kp4/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/ivanl/CLionProjects/kp4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
