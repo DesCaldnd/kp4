@@ -13,16 +13,6 @@ long double F2(long double x)
     return x * tanl(x) - ((long double) 1.0) / 3.0;
 }
 
-long double f1a(long double x)
-{
-    return 1/x;
-}
-
-long double f2a(long double x)
-{
-    return tanl(x) + x / powD(cosl(x), 2) + 1;
-}
-
 long double F1A(long double x)
 {
     return 1/x - 1;
@@ -91,11 +81,11 @@ void line()
     }
 }
 
-void iter(long double (*fa) (long double x), long double (*F) (long double x), float start, float finish)
+void iter(long double (*F) (long double x), long double (*FA) (long double x), float start, float finish)
 {
     for(double i = start; i < finish + 0.0001; i += 0.001)
     {
-        if (absD(fa(i)) >= 1)
+        if (absD(FA(i) + 1) >= 1)
         {
             printf("Convergence condition of the function is not met\n");
             return;
@@ -165,7 +155,7 @@ int main() {
 
     printf("\nThe equation: ln(x)-x+1.8=0; a = 2; b = 3; x ~= 2.8459\n");
     printf("Iteration method:    ");
-    iter(&f1a, &F1, 2, 3);
+    iter(&F1, &F1A, 2, 3);
     printf("Dichotomies method:  ");
     dichotomies(&F1, 2, 3);
     printf("Newton method:       ");
@@ -175,7 +165,7 @@ int main() {
 
     printf("\nThe equation: x*tg(x)-1/3=0; a = 0.2; b = 1; x ~= 0.5472\n");
     printf("Iteration method:    ");
-    iter(&f2a, &F2, 0.2, 1);
+    iter(&F2, &F2A, 0.2, 1);
     printf("Dichotomies method:  ");
     dichotomies(&F2, 0.2, 1);
     printf("Newton method:       ");
