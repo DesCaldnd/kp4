@@ -35,7 +35,7 @@ long double F2A(long double x)
 
 long double F1AA(long double x)
 {
-    return -1/(powD(x, 2));
+    return -1.0 / powD(x, 2);
 }
 
 long double F2AA(long double x)
@@ -73,6 +73,7 @@ long double powD(long double x, int pow)
             x /= x;
         }
     }
+    return x;
 }
 
 long double fEps(long double x)
@@ -94,7 +95,7 @@ void iter(long double (*fa) (long double x), long double (*F) (long double x), f
 {
     for(double i = start; i < finish + 0.0001; i += 0.001)
     {
-        if (absD(fa(i)) >= 1 || absD(fa(i)) >= 1)
+        if (absD(fa(i)) >= 1)
         {
             printf("Convergence condition of the function is not met\n");
             return;
