@@ -107,7 +107,7 @@ void iter(long double (*F) (long double x), long double (*FA) (long double x), f
     printf("My result = %2.52LF | Iterations = %3d\n", next, iter);
 }
 
-void dichotomies(long double (*F) (long double x), long double a, long double b)
+void dichotomy(long double (*F) (long double x), long double a, long double b)
 {
     long double eps = fEps(maxD(a, b));
     int iter = 0;
@@ -156,8 +156,8 @@ int main() {
     printf("\nThe equation: ln(x)-x+1.8=0; a = 2; b = 3; x ~= 2.8459\n");
     printf("Iteration method:    ");
     iter(&F1, &F1A, 2, 3);
-    printf("Dichotomies method:  ");
-    dichotomies(&F1, 2, 3);
+    printf("Dichotomy method:  ");
+    dichotomy(&F1, 2, 3);
     printf("Newton method:       ");
     newton(&F1, &F1A, &F1AA, 2, 3);
 
@@ -166,8 +166,8 @@ int main() {
     printf("\nThe equation: x*tg(x)-1/3=0; a = 0.2; b = 1; x ~= 0.5472\n");
     printf("Iteration method:    ");
     iter(&F2, &F2A, 0.2, 1);
-    printf("Dichotomies method:  ");
-    dichotomies(&F2, 0.2, 1);
+    printf("Dichotomy method:  ");
+    dichotomy(&F2, 0.2, 1);
     printf("Newton method:       ");
     newton(&F2, &F2A, &F2AA, 0.2, 1);
 
